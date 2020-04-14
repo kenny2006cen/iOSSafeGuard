@@ -12,7 +12,7 @@
 #import  <sys/sysctl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
-
+#import <objc/runtime.h>
 #import <Foundation/Foundation.h>
 
 typedef int  (*ptrace_ptr_t)(int _request,pid_t pid,caddr_t _addr,int _data);
@@ -42,6 +42,19 @@ typedef int  (*ptrace_ptr_t)(int _request,pid_t pid,caddr_t _addr,int _data);
             break;
         }
     }
+    
+//    uint32_t count = _dyld_image_count();
+//
+//    for (uint32_t i = 0 ; i < count; ++i) {
+//
+//           NSString *name = [[NSString alloc]initWithUTF8String:_dyld_get_image_name(i)];
+//
+//           if ([name containsString:@"Library/MobileSubstrate/MobileSubstrate.dylib"]) {
+//                isBreak = YES;
+//               break;
+//           }
+//       }
+
     
     return isBreak;
     
@@ -186,4 +199,96 @@ void AntiDebug_isatty() {
   }
 }
 
+
++(void)runAntiInjection{
+    
+    //yololib插入动态库检测
+    char *env = getenv("DYLD_INSERT_LIBRARIES");
+//    在没有插入动态库时,env为null.
+//    那么一旦为自己的应用写入插件时,我们就可以看到控制台的输出
+    //2019-01-03 19:20:37.285 antiInject[7482:630392] /Library/MobileSubstrate/MobileSubstrate.dylib
+
+    NSString  *dylibString = [NSString stringWithCString:env encoding:NSUTF8StringEncoding];
+
+    if (!dylibString||dylibString.length==0) {
+        exit(1);
+    }
+     NSLog(@"%@",dylibString);
+    
+//    //白名单检测
+//    BOOL isInWhiteList = YES;
+//
+//    uint32_t count = _dyld_image_count();
+//
+//    char * libraries ="";
+//
+//    for (int i=0; i<count; i++) {
+//        const char * imageName = _dyld_get_image_name(i);
+//
+//        //其中libraries变量是<q style="box-sizing: border-box;">白名单</q>.
+//            if (!strstr(libraries, imageName)&&!strstr(imageName, "/var/mobile/Containers/Bundle/Application")) {
+//                   print("该库非白名单之内！！\n%s",imageName);
+//                isInWhiteList = NO;
+//                break;
+//               }
+//    }
+//
+//    if (!isInWhiteList) {
+//        exit(1);
+//    }
+    
+    //hook检测
+    
+}
+
+//Method Swizzle的原理是替换imp，通过dladdr得到imp地址所在的模块，简单的代码如下:如果所在模块不是主二进制模块，就认为被恶意
+
+bool CheckHookForOC(const char* clsname,const char* selname){
+    Dl_info info;
+    
+//    SEL sel = sel_registerName(selname);
+//
+//    Class cls = objc_getClass(clsname);
+//
+//    Method method = class_getInstanceMethod(cls, sel); if(!method){
+//    method = class_getClassMethod(cls, sel);
+//    IMP imp = method_getImplementation(method);
+//    if(!dladdr((void*)imp, &info)) return false;
+//    printf("%s\n", info.dli_fname);
+//    if(!strncmp(info.dli_fname, "/System/Library/Frameworks", 26))
+//        return false;
+//    if(!strcmp(info.dli_fname, __dyld_get_image_name(0)))
+//        return false;
+//    }
+    
+    return  YES;
+    
+}
+
+//符号表替换检测
+
+//load command修改校验
++(void)checkLoadCommand{
+    
+//    NSMutableArray* array = [[NSMutableArray alloc] init];;
+//    mach_header_t *header = (mach_header_t*)base;
+//    segment一command_t *cur__seg_cmd;
+//    uintptr一t cur « (uintptr_t)this->base + sizeof(mach_header_t);
+//    for (uint i * 0; i < header->ncmds; i++,cur += cur__seg_cmd->cmdsize) {
+//    cur一seg一cmd * (segment_command_t*)cur;
+//    if(cur_seg_cmd->cmd == LC_LOAD_DYLIB || cur_seg_cmd->cmd == LC_LOAD_WEAK_DYLIB){
+//    dylib一command *dylib = (dylib_command*)cur_seg_cmd;
+//    char* name = (char,(,)((uintptr_t)dylib + dylib->dylib.name.offset); NSString* dylibName = [NSString stringWithUTF8String:name];
+//    [array addObject:dylibName];
+//    return [array copy];
+}
+
+//重签名检测bundleID检测
++(void)checkBundleID{
+    
+    NSString *bundleID = [[NSBundle mainBundle]bundleIdentifier];
+    
+    NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
+    
+}
 @end
