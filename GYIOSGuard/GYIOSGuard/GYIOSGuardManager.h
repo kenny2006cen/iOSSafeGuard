@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface GYIOSGuardManager : NSObject
 
 //+(BOOL)isJailBreak;
+//注意,appstore不能使用此方法，因为内部使用dlopen
++(void)runAntiDebug;
 
 @end
 
