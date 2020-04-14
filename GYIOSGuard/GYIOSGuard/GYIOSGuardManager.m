@@ -60,6 +60,15 @@ typedef int  (*ptrace_ptr_t)(int _request,pid_t pid,caddr_t _addr,int _data);
     AntiDebug_ioctl();
     AntiDebug_isatty();
     
+    //测试代码范例
+    /*
+     ps -A
+     debugserver *:1234 -a GYIOSGuard
+     KennydeiMac:~ a$ lldb
+     (lldb) process connect connect://192.168.2.20:1234
+     
+     */
+    
 }
 
 //sysctl 反调试,可以定时执行以上代码，当检测到程序正在被调试，可以调用exit(0)来让程序奔溃或者做其他的操作
