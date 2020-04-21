@@ -34,11 +34,34 @@ Load commands
     (描述文件在虚拟内存中的逻辑结构，布局)
     Segment command 1
     Segment command 2
-
 Data
+    _TEXT (函数代码)
+    _DATA (全局变量)
+
+
+
 
 otool:查看mach-o特定部分和段的内容
   otool -H
   otool -L
 GUI工具
   MachOview
+
+
+lldb
+
+image lookup -t 类型 :查找某歌嘞多信息
+image lookup -a 地址：根据地址查找在模块中的位置(崩溃中可以定位错误代码的文件名和所在行数)
+image lookup -n 符号后者函数名：查找某个符号或者函数的位置；
+image list 
+  列出所加载的模块信息
+image list -o -f 
+  打印模块的偏移地址 全路径
+
+br s -n test 方法断点
+
+//内存断点
+
+watchpoint set variable 变量 (内存数据发生改变时候触发)
+watchpoint set varialble self->_age;//监听self.age; 然后bt指令，查看调用站
+
