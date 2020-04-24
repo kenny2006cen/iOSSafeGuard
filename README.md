@@ -65,3 +65,5 @@ br s -n test 方法断点
 watchpoint set variable 变量 (内存数据发生改变时候触发)
 watchpoint set varialble self->_age;//监听self.age; 然后bt指令，查看调用站
 
+register read x0 (读取)
+register write x0 0x11 (修改)
