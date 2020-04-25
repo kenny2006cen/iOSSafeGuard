@@ -67,3 +67,5 @@ watchpoint set varialble self->_age;//监听self.age; 然后bt指令，查看调
 
 register read x0 (读取)
 register write x0 0x11 (修改)
+
+e -- self.sign =1; (执行变量修改等)
