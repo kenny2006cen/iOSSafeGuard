@@ -93,3 +93,34 @@ e -- self.sign =1; (执行变量修改等)
 单向散列函数：根据任意长度的消息，计算出固定长度的散列值
     MD5:(128bit散列值,可以破解)
     SHA256: (防数据篡改)
+
+isa指针
+    instance的isa指向class
+    当调用对象方法时，通过instance的isa找到class,最后找到对象方法的实现进行调用
+    class的isa指向meta-class
+    当调用类方法时，通过class的isa找到meta-class,最后找到类方法的实现进行调用
+    
+    Cateogry的本质
+    struct category_t {
+    const char *name;//类名
+    classref_t cls;  // 0
+    struct method_list_t *instanceMethods; // 对象方法
+    struct method_list_t *classMethods; // 类方法
+    struct protocol_list_t *protocols; // 协议
+    struct property_list_t *instanceProperties; // 属性
+    // Fields below this point are not always present on disk.
+    struct property_list_t *_classProperties;
+    
+    method_list_t *methodsForMeta(bool isMeta) {
+    if (isMeta) return classMethods;
+    else return instanceMethods;
+    }
+    
+    property_list_t *propertiesForMeta(bool isMeta, struct header_info *hi);
+    };
+    
+    源码基本可以看出我们平时使用categroy的方式，对象方法，类方法，协议，和属性都可以找到对应的存储方式。并且我们发现分类结构体中是不存在成员变量的，因此分类中是不允许添加成员变量的。分类中添加的属性并不会帮助我们自动生成成员变量，只会生成get set方法的声明，需要我们自己去实现。
+    
+
+    
+    
