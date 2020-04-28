@@ -123,4 +123,9 @@ isa指针
     
 
     
-    
+    Category中，load方法调用顺序
+      一般情况下：父类->子类->category
+       本质是直接查找方法
+    initialize方法调用顺序
+       父类->Category->(没有category就是子类调用)
+       initialize本质调用是objc_msgSend方法通过isa指针d调用方法，找到方法就会调用 
