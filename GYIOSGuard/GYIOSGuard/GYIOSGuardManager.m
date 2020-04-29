@@ -291,4 +291,23 @@ bool CheckHookForOC(const char* clsname,const char* selname){
     NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
     
 }
+
+#pragma mark - 异常捕获
+void UncaughtExceptionHandler(NSException *exception) {
+  
+    NSArray *arr = [exception callStackSymbols];
+    NSString *reason = [exception reason];
+    NSString *name = [exception name];
+
+    NSLog(@"\n%@\n%@\n%@",arr,reason,name);
+
+}
+
++(void)checkAppExceptionHandler{
+    
+    NSSetUncaughtExceptionHandler(&UncaughtExceptionHandler);
+    
+}
+
+
 @end
