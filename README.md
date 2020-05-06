@@ -129,3 +129,9 @@ isa指针
     initialize方法调用顺序
        父类->Category->(没有category就是子类调用)
        initialize本质调用是objc_msgSend方法通过isa指针d调用方法，找到方法就会调用 
+       
+    OC对象的本质，结构体(通过 clang -rewrite-objc main.m -o main.cpp)
+    NSObject对象本质: 
+    struct NSObject_IMPL{
+    Class isa;
+    }
