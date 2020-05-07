@@ -137,7 +137,7 @@ isa指针
     }
 
     block变量捕获机制
-    变量类型                        捕获到block内部              访问方式
-    局部变量：auto                    yes                                     值传递
-                            static                   yes                                    指针传递
-    全局变量：                              NO                                     直接访问
+    变量类型                               捕获到block内部              访问方式
+    局部变量：auto                               yes                                     值传递
+                            static                              yes                                    指针传递
+    全局变量： (类以外的变量)       NO                                     直接访问
