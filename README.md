@@ -137,7 +137,7 @@ isa指针
     }
 
 
-  p self.person1.isa (打印对象指针,KVO本质)
+  p self.person1.isa (打印对象指针,KVO本质,派生子类实现观察者模式)
   (Class) $0=NOKVONotify_MJPerons
 
     block变量捕获机制
@@ -146,3 +146,8 @@ isa指针
             static                   yes                 指针传递
                                                         
     全局变量： (类以外的变量)           NO                    直接访问
+
+ block3中类型，可以通过class方法或者isa指针查看类型，都继承NSBlock类型
+ __NSGlobalBlock__
+__NSStackBlock__
+__NSMallocBlock__
