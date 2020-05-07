@@ -135,3 +135,7 @@ isa指针
     struct NSObject_IMPL{
     Class isa;
     }
+
+
+  p self.person1.isa (打印对象指针,KVO本质)
+  (Class) $0=NOKVONotify_MJPerons
