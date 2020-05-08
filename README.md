@@ -149,5 +149,5 @@ isa指针
 
  block3中类型，可以通过class方法或者isa指针查看类型，都继承NSBlock类型
  __NSGlobalBlock__
-__NSStackBlock__
+__NSStackBlock__  (调用copy方法->__NSMallocBlock__)
 __NSMallocBlock__
