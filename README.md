@@ -151,3 +151,19 @@ isa指针
  __NSGlobalBlock__
 __NSStackBlock__  (调用copy方法->__NSMallocBlock__)
 __NSMallocBlock__
+
+__block修饰auto变量，内部会包装成一个对象，这样就可以在内部修改变量的值
+
+Runtime
+struct objc_class{
+Class isa;
+Class superclass;
+cache_t cache; //方法缓存
+class_data_bits_t bits;//用于获取具体的类信息
+}
+
+struct class_rw_t{
+method_list_t *methods;
+property_list_t *properties;
+const protocol_list_ *protocols;
+}
