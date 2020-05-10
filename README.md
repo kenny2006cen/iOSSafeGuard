@@ -167,3 +167,28 @@ method_list_t *methods;
 property_list_t *properties;
 const protocol_list_ *protocols;
 }
+
+
+objc_msgSend方法c底层三大阶段
+消息发送（当前类，父类中查找）->动态方法解析->消息转发
+
+
+runloop的基本作用
+1.保持程序的持续运行；
+2.处理app中的各种事件(比如触摸事件，定时器事件)
+3.节省CPU资源，提高程序性能；该做事时做事，该休眠时休眠；
+
+NSRunLoop * loop =[NSRunLoop currentRunLoop];
+CRRunLoopRef *loop ;(开源)
+
+runloop与线程的关系
+1.每个线程对应一个Runloop对象；
+2.runloop保存在一个全局的Dictionary里面，线程作为key,Runloop作为value
+3.线程刚创建时没有runloop对象，runloop会在第一次获取它h时创建;
+
+
+runloop的作用
+1.线程保活
+2.解决nstimer停止问题；
+3.监控应用卡顿；
+4.性能优化；
