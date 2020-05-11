@@ -192,3 +192,14 @@ runloop的作用
 2.解决nstimer停止问题；
 3.监控应用卡顿；
 4.性能优化；
+
+
+设计模式
+MVC
+        优点:View,Model可以重复利用；
+        缺点：Controller的代码过于臃肿;
+        
+MVP(Model-View-presenter)
+
+
+MVVM(Model-View-ViewModel)
