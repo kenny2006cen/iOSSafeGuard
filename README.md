@@ -226,5 +226,29 @@ MVVM(Model-View-ViewModel)
     3.尽量避免段时间内大量图片的显示，尽可能将多张图片合成一张图片显示
     4.减少透明的视图（alpha<1），不透明的就设置opaque为yes
     5.尽量避免出现离屏渲染
+            (openGL中，GPU有两种渲染方式)
+            On-Screen rendering:当前屏幕渲染，当前用于显示的屏幕缓冲区进行渲染；
+            Off-Screen rendering:离屏渲染，在当前屏幕缓冲区以外开辟一个缓冲区进行渲染操作；
+            
+            离屏渲染消耗性能的原因
+            
+            需要创建新的缓冲区
+            离屏渲染的整个过程，需要多次切换上下文环境，先是从当前屏幕（On-Screen）切换到离屏（Off-Screen）；等到离屏渲染结束以后，将离屏缓冲区的渲染结果显示到屏幕上，又需要将上下文环境从离屏切换到当前屏幕
+            哪些操作会触发离屏渲染？
+            
+            光栅化，layer.shouldRasterize = YES
+            遮罩，layer.mask
+            圆角，同时设置 layer.masksToBounds = YES、layer.cornerRadius大于0
+            考虑通过 CoreGraphics 绘制裁剪圆角，或者叫美工提供圆角图片
+            阴影，layer.shadowXXX，如果设置了 layer.shadowPath 就不会产生离屏渲染
+            
+            作者：全网iOS面试题总结
+            链接：https://www.jianshu.com/p/02ab3ba0212e
+            来源：简书
+            著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
     
     
+   APP启动优化
+    冷启动
+    通过添加环境变了可以打印出app的启动时间分析(EditSchem->Run-Arguments)
+    DYLD_PRINT_STATSTICS 设置为1
