@@ -251,4 +251,32 @@ MVVM(Model-View-ViewModel)
    APP启动优化
     冷启动
     通过添加环境变了可以打印出app的启动时间分析(EditSchem->Run-Arguments)
-    DYLD_PRINT_STATSTICS 设置为1
+    DYLD_PRINT_STATSTICS_TETAILS 设置为1
+    /*启动时间在400ms以内是比较正常的*/
+    冷启动大体分为三大阶段
+    dyld加载可执行文件到内存，顺便加载所有依赖的动态库;
+    runtime初始化,加载成objc定义的结构;
+    main函数;
+    
+    优化阶段：
+    1.dyld阶段;
+      减少动态库，合并动态库；
+      减少objc类，分类的数量，减少selector数量；
+      减少C++虚函数数量；
+      
+      2.runtime阶段
+         尽量用+initialize方法和dispatch_once取代所有的__attribute_((constrctor),C++静态构造器，objc的+load
+         
+      3.main函数阶段；
+         在不影响用户体验的前提下，尽可能将一些操作延迟，不要都放在finishLaunching方法中；
+         按需加载；
+         UI实现尽量使用纯代码，减少xib等文件的使用（xib等文件需要转换为纯代码，耗费时间);
+         减少资源文件大小;
+
+    IPA安装包瘦身
+    1.资源（图片，音频，视频等）无损压缩；
+    去除没有用到的资源:LSUnusedResources;
+    2.可执行文件瘦身
+       编译器优化；
+       使用AppCode检测未使用的代码,菜单栏->Code->Inspect Code
+       LLVM插件检测重复代码，未使用代码
