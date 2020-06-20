@@ -244,8 +244,6 @@ MVVM(Model-View-ViewModel)
             
             作者：全网iOS面试题总结
             链接：https://www.jianshu.com/p/02ab3ba0212e
-            来源：简书
-            著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
     
     
    APP启动优化
@@ -280,3 +278,7 @@ MVVM(Model-View-ViewModel)
        编译器优化；
        使用AppCode检测未使用的代码,菜单栏->Code->Inspect Code
        LLVM插件检测重复代码，未使用代码
+       
+       //保证子线程数据回来更新UI的时候不打断用户的滑动操作
+       [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO modes:@[NSDefaultRunLoopMode]];
+       
