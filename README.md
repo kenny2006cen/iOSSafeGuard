@@ -225,8 +225,11 @@ MVVM(Model-View-ViewModel)
         2.GPU能处理的最大纹理尺寸是4096x4096，一旦超过这个尺寸，就会占用CPU资源进行处理，所以纹理尽量不要超过这个尺寸
     3.尽量避免段时间内大量图片的显示，尽可能将多张图片合成一张图片显示
     4.减少透明的视图（alpha<1），不透明的就设置opaque为yes
+    
     5.尽量避免出现离屏渲染
-            (openGL中，GPU有两种渲染方式)
+    ---检测，通过勾选Xcode的Debug->View Debugging-->Rendering->Run->Color Offscreen-Rendered Yellow项。
+    
+    (openGL中，GPU有两种渲染方式)
             On-Screen rendering:当前屏幕渲染，当前用于显示的屏幕缓冲区进行渲染；
             Off-Screen rendering:离屏渲染，在当前屏幕缓冲区以外开辟一个缓冲区进行渲染操作；
             
