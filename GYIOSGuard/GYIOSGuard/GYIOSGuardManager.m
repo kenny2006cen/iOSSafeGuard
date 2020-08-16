@@ -22,6 +22,14 @@ typedef int  (*ptrace_ptr_t)(int _request,pid_t pid,caddr_t _addr,int _data);
 
 @implementation GYIOSGuardManager
 
++(void)load{
+    
+    //开始防护
+    
+}
+
+
+#pragma mark - 越狱检测
 + (BOOL)isJailBreak {
     
     BOOL isBreak = NO;
@@ -59,6 +67,7 @@ typedef int  (*ptrace_ptr_t)(int _request,pid_t pid,caddr_t _addr,int _data);
     return isBreak;
     
 }
+//反调试,注意,appstore不能使用此方法，因为内部使用dlopen
 
 +(void)runAntiDebug{
     
@@ -199,6 +208,7 @@ void AntiDebug_isatty() {
   }
 }
 
+#pragma mark - 反注入
 
 +(void)runAntiInjection{
     
@@ -293,6 +303,7 @@ bool CheckHookForOC(const char* clsname,const char* selname){
 }
 
 #pragma mark - 异常捕获
+/*
 void UncaughtExceptionHandler(NSException *exception) {
   
     NSArray *arr = [exception callStackSymbols];
@@ -308,6 +319,6 @@ void UncaughtExceptionHandler(NSException *exception) {
     NSSetUncaughtExceptionHandler(&UncaughtExceptionHandler);
     
 }
-
+*/
 
 @end
