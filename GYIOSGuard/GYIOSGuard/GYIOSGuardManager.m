@@ -16,6 +16,7 @@
 #import <objc/objc.h>
 #import <stdio.h>
 #import <string.h>
+#include <mach-o/dyld.h>
 #import <Foundation/Foundation.h>
 
 typedef int  (*ptrace_ptr_t)(int _request,pid_t pid,caddr_t _addr,int _data);
@@ -52,10 +53,11 @@ isDebugEnv = YES;
 //            exit(0);
 //        }
         
-      //  runAntiDebug();
+        runAntiDebug();
         
+        runAntiInjection();
         
-        checkHookForOC("ViewController","listReverse");
+       // checkHookForOC("ViewController","listReverse");
         
     });
     
@@ -229,8 +231,8 @@ void AntiDebug_isatty() {
   }
 }
 
-#pragma mark - 反注入
-+(void)runAntiInjection{
+#pragma mark - dylib反注入
+void runAntiInjection(){
     
     //yololib插入动态库检测
     char *env = getenv("DYLD_INSERT_LIBRARIES");
@@ -238,12 +240,16 @@ void AntiDebug_isatty() {
 //    那么一旦为自己的应用写入插件时,我们就可以看到控制台的输出
     //2019-01-03 19:20:37.285 antiInject[7482:630392] /Library/MobileSubstrate/MobileSubstrate.dylib
 
-    NSString  *dylibString = [NSString stringWithCString:env encoding:NSUTF8StringEncoding];
-
-    if (!dylibString||dylibString.length==0) {
-        NSLog(@"%@",dylibString);
-        exit(1);
+    if (env) {
+        NSString  *dylibString = [NSString stringWithCString:env encoding:NSUTF8StringEncoding];
+           
+           if (dylibString&&dylibString.length>0) {
+               NSLog(@"dylibString:%@",dylibString);
+               exit(1);
+           }
     }
+    
+   
     
 //    //白名单检测
 //    BOOL isInWhiteList = YES;
@@ -255,24 +261,24 @@ void AntiDebug_isatty() {
 //    for (int i=0; i<count; i++) {
 //        const char * imageName = _dyld_get_image_name(i);
 //
-//        //其中libraries变量是<q style="box-sizing: border-box;">白名单</q>.
-//            if (!strstr(libraries, imageName)&&!strstr(imageName, "/var/mobile/Containers/Bundle/Application")) {
-//                   print("该库非白名单之内！！\n%s",imageName);
-//                isInWhiteList = NO;
-//                break;
-//               }
+//
+//        if (!strstr(libraries, imageName)&&!strstr(imageName, "/var/mobile/Containers/Bundle/Application")) {
+//                   printf("该库非白名单之内！！\n%s",imageName);
+//            isInWhiteList = NO;
+//            break;
+//        }
 //    }
 //
 //    if (!isInWhiteList) {
 //        exit(1);
 //    }
-    
+//
     //hook检测
     
 }
 
 //Method Swizzle的原理是替换imp，通过dladdr得到imp地址所在的模块，简单的代码如下:如果所在模块不是主二进制模块，就认为被恶意
-
+#pragma mark - 防止关键方法被替换imp
 bool checkHookForOC(const char* clsname,const char* selname){
     Dl_info info;
     
@@ -289,10 +295,10 @@ bool checkHookForOC(const char* clsname,const char* selname){
     if(!strncmp(info.dli_fname, "/System/Library/Frameworks", 26))
         return false;
         
-//        const char *dyld  =  __dyld_get_image_name(0);
-//
-//    if(!strcmp(info.dli_fname,dyld))
-//        return false;
+    const char *dyld  =  _dyld_get_image_name(0);
+
+    if(!strcmp(info.dli_fname,dyld))
+        return false;
         
     }
     
@@ -300,9 +306,9 @@ bool checkHookForOC(const char* clsname,const char* selname){
     
 }
 
-//符号表替换检测
 
-//load command修改校验
+#pragma mark -符号表替换检测,load command修改校验
+
 +(void)checkLoadCommand{
     
 //    NSMutableArray* array = [[NSMutableArray alloc] init];;
@@ -326,28 +332,10 @@ void checkBundleId(){
     NSString *bundleID = [[NSBundle mainBundle]bundleIdentifier]; //NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
     
     if (![bundleID isEqualToString:@"com.orvibo.cloudPlatform"]) {
-        exit(0);
+        exit(1);
     }
     
 }
 
-#pragma mark - 异常捕获
-/*
-void UncaughtExceptionHandler(NSException *exception) {
-  
-    NSArray *arr = [exception callStackSymbols];
-    NSString *reason = [exception reason];
-    NSString *name = [exception name];
-
-    NSLog(@"\n%@\n%@\n%@",arr,reason,name);
-
-}
-
-+(void)checkAppExceptionHandler{
-    
-    NSSetUncaughtExceptionHandler(&UncaughtExceptionHandler);
-    
-}
-*/
 
 @end

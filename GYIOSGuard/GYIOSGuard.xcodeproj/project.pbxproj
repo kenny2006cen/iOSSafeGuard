@@ -16,6 +16,19 @@
 		00845954243F065C003CA4B2 /* GYIOSGuardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 00845953243F065C003CA4B2 /* GYIOSGuardManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		7053E29E24EA2B070079D90A /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		00845936243F05C5003CA4B2 /* GYIOSGuard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GYIOSGuard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00845939243F05C5003CA4B2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -29,6 +42,7 @@
 		0084594B243F05C7003CA4B2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		00845952243F065C003CA4B2 /* GYIOSGuardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GYIOSGuardManager.h; sourceTree = "<group>"; };
 		00845953243F065C003CA4B2 /* GYIOSGuardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GYIOSGuardManager.m; sourceTree = "<group>"; };
+		7053E2A024EA2C000079D90A /* lib海尔智家重签名Dylib.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "lib海尔智家重签名Dylib.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +61,7 @@
 			children = (
 				00845938243F05C5003CA4B2 /* GYIOSGuard */,
 				00845937243F05C5003CA4B2 /* Products */,
+				7053E29F24EA2C000079D90A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,6 +91,14 @@
 			path = GYIOSGuard;
 			sourceTree = "<group>";
 		};
+		7053E29F24EA2C000079D90A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7053E2A024EA2C000079D90A /* lib海尔智家重签名Dylib.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -86,6 +109,7 @@
 				00845932243F05C5003CA4B2 /* Sources */,
 				00845933243F05C5003CA4B2 /* Frameworks */,
 				00845934243F05C5003CA4B2 /* Resources */,
+				7053E29E24EA2B070079D90A /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -290,7 +314,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = SB2AYBD9S3;
+				DEVELOPMENT_TEAM = B478Z2VECP;
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = GYIOSGuard/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -298,8 +323,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bying.wallet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bying.wallet1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -311,7 +340,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = SB2AYBD9S3;
+				DEVELOPMENT_TEAM = B478Z2VECP;
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = GYIOSGuard/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -319,8 +349,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bying.wallet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bying.wallet1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s arm64";
