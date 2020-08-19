@@ -285,3 +285,22 @@ MVVM(Model-View-ViewModel)
        //保证子线程数据回来更新UI的时候不打断用户的滑动操作
        [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO modes:@[NSDefaultRunLoopMode]];
        
+oc,property属性默认atomic,对setter方法加锁
+     weak,对象消失后会自动置为nil
+      Dynamic typinge 
+      Dynamic binding 
+      Dynamic loading
+      
+Runtime 运行时暴力访问私有方法
+#import "Test.h"
+#import <objc/runtime.h>
+...
+Test *test = [[Test alloc] init];
+/* 运行时暴力访问私有方法 */
+/* 获取类对象方法列表 */
+unsigned int count = 0;
+Method *methods = class_copyMethodList([Test class], &count);
+/* 获取第一个方法的方法名 */
+SEL sel = method_getName(methods[0]);
+/* 执行方法*/
+[test performSelector:sel];

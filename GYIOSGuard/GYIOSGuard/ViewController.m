@@ -24,7 +24,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    NSString *firstUserName = @"nick"; NSString *secondUserName = @"nick";
+    if (firstUserName == secondUserName) {
+        NSLog(@"areEqual"); }
+    else { NSLog(@"areNotEqual");
+    }
     
 }
 
