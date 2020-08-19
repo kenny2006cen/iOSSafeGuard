@@ -13,24 +13,59 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #import <objc/runtime.h>
+#import <objc/objc.h>
+#import <stdio.h>
+#import <string.h>
+#include <mach-o/dyld.h>
 #import <Foundation/Foundation.h>
 
 typedef int  (*ptrace_ptr_t)(int _request,pid_t pid,caddr_t _addr,int _data);
+
 #ifndef PT_DENY_ATTACH
 #define PT_DENY_ATTACH 31
+#endif
+
+static bool isDebugEnv= false;
+
+#ifdef DEBUG
+    //do sth.
+isDebugEnv = YES;
+#else
+    //do sth.
+
 #endif
 
 @implementation GYIOSGuardManager
 
 +(void)load{
     
-    //开始防护
+    //release环境开始防护
+    
+    if (isDebugEnv) {
+        return;
+    }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        //延迟防护，防止启动就被load
+        
+//        if (isJailBreak()) {
+//            exit(0);
+//        }
+        
+        runAntiDebug();
+        
+        runAntiInjection();
+        
+       // checkHookForOC("ViewController","listReverse");
+        
+    });
     
 }
 
 
 #pragma mark - 越狱检测
-+ (BOOL)isJailBreak {
+bool isJailBreak(){
     
     BOOL isBreak = NO;
     
@@ -51,36 +86,23 @@ typedef int  (*ptrace_ptr_t)(int _request,pid_t pid,caddr_t _addr,int _data);
         }
     }
     
-//    uint32_t count = _dyld_image_count();
-//
-//    for (uint32_t i = 0 ; i < count; ++i) {
-//
-//           NSString *name = [[NSString alloc]initWithUTF8String:_dyld_get_image_name(i)];
-//
-//           if ([name containsString:@"Library/MobileSubstrate/MobileSubstrate.dylib"]) {
-//                isBreak = YES;
-//               break;
-//           }
-//       }
-
-    
     return isBreak;
     
 }
-//反调试,注意,appstore不能使用此方法，因为内部使用dlopen
 
-+(void)runAntiDebug{
+#pragma mark - 越狱检测,反调试,注意,appstore不能使用dlopen方法
+void runAntiDebug(){
     
-    if (isDebuggerPresent()) {
-        exit(0);
-    }
-    
-    antiDebug_01();
-    antiDebug_02();
-    antiDebug_03();
-    check_svc_integrity();
-    AntiDebug_ioctl();
-    AntiDebug_isatty();
+//    if (isDebuggerPresent()) {
+//        exit(0);
+//    }
+//
+//   // antiDebug_01();
+//    antiDebug_02();
+//    antiDebug_03();
+//    check_svc_integrity();
+//    AntiDebug_ioctl();
+//    AntiDebug_isatty();
     
     //测试代码范例
     /*
@@ -114,15 +136,16 @@ int name[4];//指定查询信息的数组
 }
 
 
-static __attribute__((always_inline)) void antiDebug_01() {
-    
-    // ptrace(PT_DENY_ATTACH,0,0,0); //系统函数并没有暴露出此方法所以不能直接通过此方式调用
-
-         void *handle = dlopen(0, RTLD_NOW|RTLD_GLOBAL);
-           ptrace_ptr_t ptrace_ptr = (ptrace_ptr_t)dlsym(handle, "ptrace");
-           ptrace_ptr(PT_DENY_ATTACH,0,0,0);
-
-}
+//
+//static __attribute__((always_inline)) void antiDebug_01() {
+//
+//    // ptrace(PT_DENY_ATTACH,0,0,0); //系统函数并没有暴露出此方法所以不能直接通过此方式调用
+//
+//         void *handle = dlopen(0, RTLD_NOW|RTLD_GLOBAL);
+//           ptrace_ptr_t ptrace_ptr = (ptrace_ptr_t)dlsym(handle, "ptrace");
+//           ptrace_ptr(PT_DENY_ATTACH,0,0,0);
+//
+//}
 
 //syscall可以通过软中断实现从用户态切换到系统内核态的转换，同时可以通过arm 汇编实现以上功能。通过asm volatile内联汇编，实际上也是调用了ptrace。
 
@@ -208,9 +231,8 @@ void AntiDebug_isatty() {
   }
 }
 
-#pragma mark - 反注入
-
-+(void)runAntiInjection{
+#pragma mark - dylib反注入
+void runAntiInjection(){
     
     //yololib插入动态库检测
     char *env = getenv("DYLD_INSERT_LIBRARIES");
@@ -218,12 +240,16 @@ void AntiDebug_isatty() {
 //    那么一旦为自己的应用写入插件时,我们就可以看到控制台的输出
     //2019-01-03 19:20:37.285 antiInject[7482:630392] /Library/MobileSubstrate/MobileSubstrate.dylib
 
-    NSString  *dylibString = [NSString stringWithCString:env encoding:NSUTF8StringEncoding];
-
-    if (!dylibString||dylibString.length==0) {
-        exit(1);
+    if (env) {
+        NSString  *dylibString = [NSString stringWithCString:env encoding:NSUTF8StringEncoding];
+           
+           if (dylibString&&dylibString.length>0) {
+               NSLog(@"dylibString:%@",dylibString);
+               exit(1);
+           }
     }
-     NSLog(@"%@",dylibString);
+    
+   
     
 //    //白名单检测
 //    BOOL isInWhiteList = YES;
@@ -235,49 +261,54 @@ void AntiDebug_isatty() {
 //    for (int i=0; i<count; i++) {
 //        const char * imageName = _dyld_get_image_name(i);
 //
-//        //其中libraries变量是<q style="box-sizing: border-box;">白名单</q>.
-//            if (!strstr(libraries, imageName)&&!strstr(imageName, "/var/mobile/Containers/Bundle/Application")) {
-//                   print("该库非白名单之内！！\n%s",imageName);
-//                isInWhiteList = NO;
-//                break;
-//               }
+//
+//        if (!strstr(libraries, imageName)&&!strstr(imageName, "/var/mobile/Containers/Bundle/Application")) {
+//                   printf("该库非白名单之内！！\n%s",imageName);
+//            isInWhiteList = NO;
+//            break;
+//        }
 //    }
 //
 //    if (!isInWhiteList) {
 //        exit(1);
 //    }
-    
+//
     //hook检测
     
 }
 
 //Method Swizzle的原理是替换imp，通过dladdr得到imp地址所在的模块，简单的代码如下:如果所在模块不是主二进制模块，就认为被恶意
-
-bool CheckHookForOC(const char* clsname,const char* selname){
+#pragma mark - 防止关键方法被替换imp
+bool checkHookForOC(const char* clsname,const char* selname){
     Dl_info info;
     
-//    SEL sel = sel_registerName(selname);
-//
-//    Class cls = objc_getClass(clsname);
-//
-//    Method method = class_getInstanceMethod(cls, sel); if(!method){
-//    method = class_getClassMethod(cls, sel);
-//    IMP imp = method_getImplementation(method);
-//    if(!dladdr((void*)imp, &info)) return false;
-//    printf("%s\n", info.dli_fname);
-//    if(!strncmp(info.dli_fname, "/System/Library/Frameworks", 26))
-//        return false;
-//    if(!strcmp(info.dli_fname, __dyld_get_image_name(0)))
-//        return false;
-//    }
+    SEL sel = sel_registerName(selname);
+
+    Class cls = objc_getClass(clsname);
+
+    Method method = class_getInstanceMethod(cls, sel); if(!method){
+    method = class_getClassMethod(cls, sel);
+    IMP imp = method_getImplementation(method);
+    if(!dladdr((void*)imp, &info)) return false;
+    printf("info.dli_fname:%s\n", info.dli_fname);
+        
+    if(!strncmp(info.dli_fname, "/System/Library/Frameworks", 26))
+        return false;
+        
+    const char *dyld  =  _dyld_get_image_name(0);
+
+    if(!strcmp(info.dli_fname,dyld))
+        return false;
+        
+    }
     
     return  YES;
     
 }
 
-//符号表替换检测
 
-//load command修改校验
+#pragma mark -符号表替换检测,load command修改校验
+
 +(void)checkLoadCommand{
     
 //    NSMutableArray* array = [[NSMutableArray alloc] init];;
@@ -293,32 +324,18 @@ bool CheckHookForOC(const char* clsname,const char* selname){
 //    return [array copy];
 }
 
-//重签名检测bundleID检测
-+(void)checkBundleID{
+
+#pragma mark - 重签名检测bundleID检测
+
+void checkBundleId(){
     
-    NSString *bundleID = [[NSBundle mainBundle]bundleIdentifier];
+    NSString *bundleID = [[NSBundle mainBundle]bundleIdentifier]; //NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
     
-    NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
+    if (![bundleID isEqualToString:@"com.orvibo.cloudPlatform"]) {
+        exit(1);
+    }
     
 }
 
-#pragma mark - 异常捕获
-/*
-void UncaughtExceptionHandler(NSException *exception) {
-  
-    NSArray *arr = [exception callStackSymbols];
-    NSString *reason = [exception reason];
-    NSString *name = [exception name];
-
-    NSLog(@"\n%@\n%@\n%@",arr,reason,name);
-
-}
-
-+(void)checkAppExceptionHandler{
-    
-    NSSetUncaughtExceptionHandler(&UncaughtExceptionHandler);
-    
-}
-*/
 
 @end

@@ -30,6 +30,8 @@
     else { NSLog(@"areNotEqual");
     }
     
+    
+  //  [self runLoopTest];
 }
 
 -(void)startThread{
@@ -45,6 +47,7 @@
             [[NSRunLoop currentRunLoop]runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
             //这样就不会超时，一直做事情
         }
+        
     }];
     
     [self.thread start];
@@ -176,6 +179,7 @@ struct Node {
 
 + (void)listReverse
 {
+    return;
     struct Node * p = [self constructList];
     
     [self printList:p];
