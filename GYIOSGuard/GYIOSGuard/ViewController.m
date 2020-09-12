@@ -21,18 +21,31 @@
 
 @implementation ViewController
 
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    NSString *firstUserName = @"nick"; NSString *secondUserName = @"nick";
-    if (firstUserName == secondUserName) {
-        NSLog(@"areEqual"); }
-    else { NSLog(@"areNotEqual");
-    }
-    
+   
+    dispatch_async(dispatch_get_global_queue(0,0), ^{
+        
+        
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            
+            
+        });
+        
+        
+        
+    });
     
   //  [self runLoopTest];
 }
+
+
 
 -(void)startThread{
     

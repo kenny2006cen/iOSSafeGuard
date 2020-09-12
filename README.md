@@ -176,7 +176,9 @@ objc_msgSend方法c底层三大阶段
 runloop的基本作用
 1.保持程序的持续运行；
 2.处理app中的各种事件(比如触摸事件，定时器事件)
-3.节省CPU资源，提高程序性能；该做事时做事，该休眠时休眠；
+3.节省CPU资源，提高程序性能；该做事时做事，该休眠时休眠(通过mach_msg()；
+
+runloop本质:mach port和mach_msg();
 
 NSRunLoop * loop =[NSRunLoop currentRunLoop];
 CRRunLoopRef *loop ;(开源)
@@ -304,3 +306,9 @@ Method *methods = class_copyMethodList([Test class], &count);
 SEL sel = method_getName(methods[0]);
 /* 执行方法*/
 [test performSelector:sel];
+
+CoreAnimation 动画直接作用CALayer,执行在后台，不阻塞线程,
+CALayer是比一个比UIView更底层的图形类，是对底层图形API(openGLES)封装后得到的一个类
+
+dealloc调用流程
+   objc_rootdealloc()->rootDealloc()->判断是否可以被释放(主要判断isa指针和weak引用)->objc_dispose()(里面包括objc_destructInstance()，->c函数free())
