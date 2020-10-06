@@ -58,7 +58,7 @@ image list
 image list -o -f 
   打印模块的偏移地址 全路径
 
-br s -n test 方法断点
+br s -n test 方法断点 (test可以为c方法)
 
 //内存断点
 

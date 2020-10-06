@@ -132,7 +132,7 @@
     //@synchronized(mutex,递归锁的封装)
     //性能高到低：os_unfair_lock>OSSpinLock>dispatch_semaphore>pthread_mutex>...>synchronized
     
-    //读写安全，多读单写
+    //读写安全，多读单写（还可以用GCD栅栏函数）
     //pthread_rwlock
     dispatch_barrier_async(queue, ^{
         
@@ -285,6 +285,19 @@ struct Node {
         }
     }
 }
-
+//消息转发
+//1.自身处理，动态方法解析，看是否能动态添加方法
++(BOOL)resolveClassMethod:(SEL)sel{
+    
+    return [super resolveClassMethod:sel];
+}
++(BOOL)resolveInstanceMethod:(SEL)sel{
+    return [super resolveInstanceMethod:sel];
+}
+//2.快速消息转发，备用接收者.返回非nil则转发给信对象
+-(id)forwardingTargetForSelector:(SEL)aSelector{
+    //
+    return nil;//
+}
 
 @end
